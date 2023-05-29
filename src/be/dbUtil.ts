@@ -1,6 +1,6 @@
-import { MongoClient } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 
-let cachedDb = null;
+let cachedDb: Db | null = null;
 
 export const connectToDatabase = async (uri) => {
   // we can cache the access to our database to speed things up a bit

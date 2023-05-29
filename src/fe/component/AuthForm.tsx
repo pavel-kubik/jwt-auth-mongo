@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import './AuthForm.css';
-import { t } from '../Util/translate';
-import { clearUserDataInLocalStorage, signIn, signUp } from '../lib/auth';
+import { clearUserDataInLocalStorage, signIn, signUp } from '../util/auth';
 
 const AuthForm = ({
   loggedUser,
@@ -14,6 +13,7 @@ const AuthForm = ({
   preSignUp = null,
   postSignIn = null,
   postSignUp = null,
+  t = (key: string, replaceValues = {}) => key,
 }) => {
   const [authMode, setAuthMode] = useState('signin');
   const [signInError, setSignInError] = useState(null);
@@ -39,7 +39,8 @@ const AuthForm = ({
       values.email,
       values.password,
       setLoggedUser,
-      setSignInError
+      setSignInError,
+      t
     );
     values.password = '';
     if (postSignIn) {
@@ -56,7 +57,8 @@ const AuthForm = ({
       values.email,
       values.password,
       setLoggedUser,
-      setSignUpError
+      setSignUpError,
+      t
     );
     values.password = '';
     if (postSignUp) {
@@ -155,7 +157,9 @@ const AuthForm = ({
                         />
                       </div>
                       {errors.email && touched.email ? (
-                        <div className="field-error">{errors.email}</div>
+                        <div className="field-error">
+                          {errors.email as string}
+                        </div>
                       ) : null}
                       <div className="field-wrap">
                         <label>{t('components.user.login.password')}</label>
@@ -168,14 +172,19 @@ const AuthForm = ({
                         />
                       </div>
                       {errors.password && touched.password ? (
-                        <div className="field-error">{errors.password}</div>
+                        <div className="field-error">
+                          {errors.password as string}
+                        </div>
                       ) : null}{' '}
                       <div className="field-wrap">
                         {signInError && (
                           <div className="field-error">{signInError}</div>
                         )}
                       </div>
-                      <div className="button" onClick={handleSubmit}>
+                      <div
+                        className="button"
+                        onClick={() => handleSubmit(values)} //can't pass function directly because of TS
+                      >
                         {t('components.user.login.submit')}
                       </div>
                     </fieldset>
@@ -216,7 +225,9 @@ const AuthForm = ({
                         />
                       </div>
                       {errors.username && touched.username ? (
-                        <div className="field-error">{errors.username}</div>
+                        <div className="field-error">
+                          {errors.username as string}
+                        </div>
                       ) : null}
                       <div className="field-wrap">
                         <label>{t('components.user.register.email')}</label>
@@ -229,7 +240,9 @@ const AuthForm = ({
                         />
                       </div>
                       {errors.email && touched.email ? (
-                        <div className="field-error">{errors.email}</div>
+                        <div className="field-error">
+                          {errors.email as string}
+                        </div>
                       ) : null}
                       <div className="field-wrap">
                         <label>{t('components.user.register.password')}</label>
@@ -242,14 +255,19 @@ const AuthForm = ({
                         />
                       </div>
                       {errors.password && touched.password ? (
-                        <div className="field-error">{errors.password}</div>
+                        <div className="field-error">
+                          {errors.password as string}
+                        </div>
                       ) : null}
                       <div className="field-wrap">
                         {signUpError && (
                           <div className="field-error">{signUpError}</div>
                         )}
                       </div>
-                      <div className="button" onClick={handleSubmit}>
+                      <div
+                        className="button"
+                        onClick={() => handleSubmit(values)} //can't pass function directly because of TS
+                      >
                         {t('components.user.register.submit')}
                       </div>
                     </fieldset>
