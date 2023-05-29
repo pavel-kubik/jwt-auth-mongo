@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "src",
+    "src/fe/component/*.css"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -35,6 +36,7 @@
   "dependencies": {
     "bcryptjs-react": "^2.4.6",
     "formik": "^2.4.0",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.5.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",

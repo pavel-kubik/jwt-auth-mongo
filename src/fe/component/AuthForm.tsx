@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Formik, FormikErrors } from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import './AuthForm.css';
 import { clearUserDataInLocalStorage, signIn, signUp } from '../util/auth';
 
 const AuthForm = ({
