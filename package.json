@@ -1,11 +1,12 @@
 {
   "name": "jwt-auth-mongo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JWT authentification module using mongo db to store users",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,13 @@
   "bugs": {
     "url": "https://github.com/pavel-kubik/jwt-auth-mongo/issues"
   },
-  "homepage": "https://github.com/pavel-kubik/jwt-auth-mongo#readme"
+  "homepage": "https://github.com/pavel-kubik/jwt-auth-mongo#readme",
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "bcryptjs-react": "^2.4.6",
+    "mongodb": "^5.5.0"
+  }
 }

@@ -7,9 +7,7 @@ export const connectToDatabase = async (uri) => {
   // (this is the only thing that is safe to cache here)
   if (cachedDb) return cachedDb;
 
-  const client = await MongoClient.connect(uri, {
-    useUnifiedTopology: true
-  });
+  const client = await MongoClient.connect(uri);
 
   cachedDb = client.db(process.env.MONGODB_DATABASE);
 

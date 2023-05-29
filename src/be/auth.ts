@@ -11,8 +11,10 @@ export const validateJWT = async (event, callback) => {
         //if (decodedToken.role !== 'admin') {  // TODO check roles
         const database = await connectToDatabase(process.env.MONGODB_URI);
         const collection = database.collection('user');
-        const userData = await collection.findOne({ email: decodedToken.email });
-        let out = { statusCode: 500 };
+        const userData = await collection.findOne({
+          email: decodedToken.email,
+        });
+        let out = null;
         try {
           out = await callback(userData);
         } catch (error) {
@@ -21,7 +23,7 @@ export const validateJWT = async (event, callback) => {
         if (out) {
           return {
             statusCode: out.code,
-            body: JSON.stringify(out.body)
+            body: JSON.stringify(out.body),
           };
         }
       }
@@ -29,16 +31,16 @@ export const validateJWT = async (event, callback) => {
     return {
       statusCode: 401,
       body: JSON.stringify({
-        message: 'Not authorized'
-      })
+        message: 'Not authorized',
+      }),
     };
   } catch (error) {
     console.log('AUTH validate error: ' + error.message);
     return {
       statusCode: 401,
       body: JSON.stringify({
-        message: 'Not authorized'
-      })
+        message: 'Not authorized',
+      }),
     };
   }
 };

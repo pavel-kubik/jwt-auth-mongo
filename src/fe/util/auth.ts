@@ -1,5 +1,4 @@
 import bcrypt from 'bcryptjs-react';
-import { t } from '../Util/translate';
 
 export const storeUserDataInLocalStorage = (userData) => {
   localStorage.setItem('_user', JSON.stringify(userData));
@@ -13,18 +12,24 @@ export const getUserDataInLocalStorage = () => {
   return JSON.parse(localStorage.getItem('_user'));
 };
 
-export const signIn = async (email, password, setLoggedUser, setLoginError) => {
+export const signIn = async (
+  email,
+  password,
+  setLoggedUser,
+  setLoginError,
+  t
+) => {
   try {
     const responseSalt = await fetch('/.netlify/functions/sign_in_salt', {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email
-      })
+        email: email,
+      }),
     });
     if (!responseSalt.ok) {
       console.log('Error read salt: ' + JSON.stringify(responseSalt));
@@ -38,12 +43,12 @@ export const signIn = async (email, password, setLoggedUser, setLoginError) => {
       mode: 'cors',
       cache: 'no-cache',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         email: email,
-        password: saltedPassword
-      })
+        password: saltedPassword,
+      }),
     });
     if (response.status === 200) {
       const userData = await response.json();
@@ -61,7 +66,14 @@ export const signIn = async (email, password, setLoggedUser, setLoginError) => {
   }
 };
 
-export const signUp = async (username, email, password, setLoggedUser, setLoginError) => {
+export const signUp = async (
+  username,
+  email,
+  password,
+  setLoggedUser,
+  setLoginError,
+  t
+) => {
   const salt = await bcrypt.genSalt(10);
   const saltedPassword = await bcrypt.hash(password, salt);
   const response = await fetch('/.netlify/functions/sign_up', {
@@ -69,14 +81,14 @@ export const signUp = async (username, email, password, setLoggedUser, setLoginE
     mode: 'cors',
     cache: 'no-cache',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       username: username,
       email: email,
       password: saltedPassword,
-      salt: salt
-    })
+      salt: salt,
+    }),
   });
   if (response.status === 200) {
     //const token = response.headers.get('x-access-token');
