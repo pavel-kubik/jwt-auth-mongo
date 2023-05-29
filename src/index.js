@@ -1,2 +1,4 @@
-export AuthForm from './fe/component/AuthForm';
-export validateJWT from './be/auth';
+module.exports = {
+  AuthForm: require('./fe/component/AuthForm'),
+  validateJWT: require('./be/auth'),
+};
