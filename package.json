@@ -1,5 +1,5 @@
 {
-  "name": "jwt-auth-mongo",
+  "name": "jwt-auth-mongodb",
   "version": "1.0.6",
   "description": "JWT authentication module using mongo db to store users",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pavel-kubik/jwt-auth-mongo.git"
+    "url": "git+https://github.com/pavel-kubik/jwt-auth-mongodb.git"
   },
   "keywords": [
     "jwt",
@@ -25,19 +25,20 @@
   "author": "Pavel Kubik",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/pavel-kubik/jwt-auth-mongo/issues"
+    "url": "https://github.com/pavel-kubik/jwt-auth-mongodb/issues"
   },
-  "homepage": "https://github.com/pavel-kubik/jwt-auth-mongo#readme",
+  "homepage": "https://github.com/pavel-kubik/jwt-auth-mongodb#readme",
   "devDependencies": {
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.5.0"
   },
   "dependencies": {
     "bcryptjs-react": "^2.4.6",
     "formik": "^2.4.0",
-    "jsonwebtoken": "^9.0.0",
-    "mongodb": "^5.5.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "yup": "^1.2.0"

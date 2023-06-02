@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -279,15 +278,6 @@ const AuthForm = ({
       </div>
     </div>
   );
-};
-
-AuthForm.propTypes = {
-  loggedUser: PropTypes.object,
-  setLoggedUser: PropTypes.func.isRequired,
-  preSignIn: PropTypes.func,
-  preSignUp: PropTypes.func,
-  postSignIn: PropTypes.func,
-  postSignUp: PropTypes.func,
 };
 
 export default AuthForm;
