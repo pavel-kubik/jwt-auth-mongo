@@ -1,9 +1,35 @@
 # How to use library
 
+Boilerplate code for authentication. It is consist from frontend and backend part.
+Frontend part is React component which represent `Login` and `Sign up` forms.
+
+Backend part consist of functions used at netlify functions (Node JS).
+
+Example usage can be found at https://github.com/pavel-kubik/mestle.
+
+User information are stored in mongodb in collections `user`. Data structure
+
+```
+  username - unique username
+  email - unique email
+  password - hashed password
+  salt - salt used at FE to hash password
+```
+
+Future development:
+[ ] Prepare form for react-native
+[ ] Export sign-in and sign-up form separately for better customization
+[ ] Add refresh token
+[ ] Add reset password
+
 ## FE
+
+Import component `AuthForm`.
 
 ```
 import AuthForm from 'jwt-auth-mongodb/dist/fe/component/AuthForm';
+
+const [loggedUser, setLoggedUser] = useState(null); // to be defined in root component
 
 <AuthForm //
   loggedUser={loggedUser}
@@ -16,15 +42,71 @@ import AuthForm from 'jwt-auth-mongodb/dist/fe/component/AuthForm';
 />
 ```
 
+Parameters
+| name | description |
+|------|-------------|
+| loggedUser | mandatory - loggedUser state |
+| setLoggedUser | mandatory - loggedUser state setter |
+| preSignIn | callback before sign-in |
+| preSignUp | callback before sign-up |
+| postSignIn | callback after sign-in |
+| postSignUp | callback after sign-up |
+| t | translation function |
+
 ## BE
+
+Should be included just under netlify directory. It is not suitable for browser code.
 
 ### Auth endpoints
 
-`/netlify/functions/sign_in`
-`/netlify/functions/sign_in_salt`
-`/netlify/functions/sign_up`
+Next three endpoint must be defined.
 
-### Secured call.
+`POST /netlify/functions/sign_in`
+`POST /netlify/functions/sign_in_salt`
+`POST /netlify/functions/sign_up`
+
+#### Sign-in function
+
+Create file at `/netlify/functions/sign_in/sign_in.ts` with content:
+
+```
+import { Handler } from '@netlify/functions';
+import { signIn } from 'jwt-auth-mongodb/dist/be/auth';
+
+export const handler: Handler = async (event, context) => {
+  return await signIn(event, context);
+};
+```
+
+#### Sign-in salt function
+
+Create file at `/netlify/functions/sign_in_salt/sign_in_salt.ts` with content:
+
+```
+import { Handler } from '@netlify/functions';
+import { signInSalt } from 'jwt-auth-mongodb/dist/be/auth';
+
+export const handler: Handler = async (event, context) => {
+  return await signInSalt(event, context);
+};
+```
+
+#### Sign-up function
+
+Create file at `/netlify/functions/sign_up/sign_up.ts` with content:
+
+```
+import { Handler } from '@netlify/functions';
+import { signUp } from 'jwt-auth-mongodb/dist/be/auth';
+
+export const handler: Handler = async (event, context) => {
+  return await signUp(event, context);
+};
+```
+
+### Secured call
+
+Every secured endpoint should be wrapped with `validateJWT`.
 
 ```
 import { Handler } from '@netlify/functions';
