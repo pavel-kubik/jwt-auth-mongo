@@ -16,11 +16,18 @@ User information are stored in mongodb in collections `user`. Data structure
   salt - salt used at FE to hash password
 ```
 
+![Alt text](doc/signIn.png)
+![Alt text](doc/signUp.png)
+![Alt text](doc/signOut.png)
+
 Future development:
+
+```
 [ ] Prepare form for react-native
 [ ] Export sign-in and sign-up form separately for better customization
 [ ] Add refresh token
 [ ] Add reset password
+```
 
 ## FE
 
