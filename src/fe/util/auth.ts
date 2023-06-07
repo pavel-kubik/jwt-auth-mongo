@@ -74,35 +74,40 @@ export const signUp = async (
   setLoginError,
   t
 ) => {
-  const salt = await bcrypt.genSalt(10);
-  const saltedPassword = await bcrypt.hash(password, salt);
-  const response = await fetch('/.netlify/functions/sign_up', {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      username: username,
-      email: email,
-      password: saltedPassword,
-      salt: salt,
-    }),
-  });
-  if (response.status === 200) {
-    //const token = response.headers.get('x-access-token');
-    const userData = await response.json();
-    setLoggedUser(userData);
-    storeUserDataInLocalStorage(userData);
-    return userData;
-  } else {
-    const data = await response.json();
-    console.log('SignUp error: ' + JSON.stringify(data));
-    if (data.errorCode) {
-      setLoginError(t(data.errorCode));
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const saltedPassword = await bcrypt.hash(password, salt);
+    const response = await fetch('/.netlify/functions/sign_up', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        password: saltedPassword,
+        salt: salt,
+      }),
+    });
+    if (response.status === 200) {
+      //const token = response.headers.get('x-access-token');
+      const userData = await response.json();
+      setLoggedUser(userData);
+      storeUserDataInLocalStorage(userData);
+      return userData;
     } else {
-      setLoginError(t('lib.auth.signUp.cantSignUp'));
+      const data = await response.json();
+      console.log('SignUp error: ' + JSON.stringify(data));
+      if (data.errorCode) {
+        setLoginError(t(data.errorCode));
+      } else {
+        setLoginError(t('lib.auth.signUp.cantSignUp'));
+      }
     }
+  } catch (error) {
+    console.log('Signup error: ' + error);
+    setLoginError(t('lib.auth.signUp.cantSignUp'));
   }
 };

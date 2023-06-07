@@ -1,6 +1,6 @@
 {
   "name": "jwt-auth-mongodb",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "JWT authentication module using mongo db to store users",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,16 +31,17 @@
   "devDependencies": {
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.0",
-    "typescript": "^5.0.4",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.0",
-    "mongodb": "^5.5.0"
+    "typescript": "^5.0.4"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.5.0",
     "bcryptjs-react": "^2.4.6",
     "formik": "^2.4.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
+    "react-native": "^0.71.8",
     "yup": "^1.2.0"
   }
 }
