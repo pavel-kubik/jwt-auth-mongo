@@ -11,6 +11,7 @@ const AuthForm = ({
   preSignUp = null,
   postSignIn = null,
   postSignUp = null,
+  apiUrl = null,
   t = (key: string, replaceValues = {}) => key,
 }) => {
   const [authMode, setAuthMode] = useState('signin');
@@ -72,6 +73,7 @@ const AuthForm = ({
                 setLoggedUser={setLoggedUser}
                 preSignIn={preSignIn}
                 postSignIn={postSignIn}
+                apiUrl={apiUrl}
                 t={t}
               />
             )}
@@ -80,6 +82,7 @@ const AuthForm = ({
                 setLoggedUser={setLoggedUser}
                 preSignUp={preSignUp}
                 postSignUp={postSignUp}
+                apiUrl={apiUrl}
                 t={t}
               />
             )}

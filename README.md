@@ -45,6 +45,7 @@ const [loggedUser, setLoggedUser] = useState(null); // to be defined in root com
   preSignUp={initBECall}
   postSignIn={syncAttempts}
   postSignUp={syncAttempts}
+  apiUrl={apiUrl}
   t={t}
 />
 ```
@@ -58,6 +59,7 @@ Parameters
 | preSignUp | callback before sign-up |
 | postSignIn | callback after sign-in |
 | postSignUp | callback after sign-up |
+| apiUrl | backend API base url |
 | t | translation function |
 
 ## BE
@@ -177,3 +179,7 @@ npm i ../jwt-auth-mongodb/jwt-auth-mongodb-1.0.6.tgz
 rm -rf node_modules/.cache
 npm start
 ```
+
+## Deploy library into npmjs
+
+`npm publish`

@@ -56,7 +56,9 @@ export const signIn = async (event, context) => {
   }
 
   if (!process.env.TOKEN_KEY) {
-    console.log('MISCONFIGURATION - Missing TOKEN KEY');
+    console.log(
+      'MISCONFIGURATION - Missing TOKEN_KEY. Please add it to environment variables.'
+    );
     return { statusCode: 500, body: 'Missing TOKEN KEY' };
   }
 
@@ -155,7 +157,9 @@ export const signUp = async (event, context) => {
   }
 
   if (!process.env.TOKEN_KEY) {
-    console.log('MISCONFIGURATION - Missing TOKEN KEY');
+    console.log(
+      'MISCONFIGURATION - Missing TOKEN_KEY. Please add it to environment variables.'
+    );
     return { statusCode: 500, body: 'Missing TOKEN KEY' };
   }
 
@@ -172,6 +176,7 @@ export const signUp = async (event, context) => {
     // ensure email and username unique
     const userDataByEmail = await collection.findOne({ email: email });
     if (userDataByEmail) {
+      console.log('Email [' + email + '] is already used.');
       return {
         statusCode: 409,
         body: JSON.stringify({
@@ -182,6 +187,7 @@ export const signUp = async (event, context) => {
     }
     const userDataByUsername = await collection.findOne({ username: username });
     if (userDataByUsername) {
+      console.log('Username [' + email + '] is already used.');
       return {
         statusCode: 409,
         body: JSON.stringify({

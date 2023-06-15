@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs-react';
+import defaultTranslator from './defaultTranslator';
 
 export const storeUserDataInLocalStorage = (userData) => {
   localStorage.setItem('_user', JSON.stringify(userData));
@@ -13,14 +14,16 @@ export const getUserDataInLocalStorage = () => {
 };
 
 export const signIn = async (
-  email,
-  password,
-  setLoggedUser,
-  setLoginError,
-  t
+  email: string,
+  password: string,
+  setLoggedUser: Function = null,
+  setSignInError: Function = null,
+  apiUrl: string = null,
+  t: Function = defaultTranslator
 ) => {
   try {
-    const responseSalt = await fetch('/.netlify/functions/sign_in_salt', {
+    const saltUrl = apiUrl + '/.netlify/functions/sign_in_salt';
+    const responseSalt = await fetch(saltUrl, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -33,12 +36,14 @@ export const signIn = async (
     });
     if (!responseSalt.ok) {
       console.log('Error read salt: ' + JSON.stringify(responseSalt));
-      setLoginError(t('lib.auth.signIn.cantLogin'));
+      setSignInError(t('lib.auth.signIn.cantLogin'));
       return;
     }
     const { salt } = await responseSalt.json();
     const saltedPassword = await bcrypt.hash(password, salt);
-    const response = await fetch('/.netlify/functions/sign_in', {
+
+    const signInUrl = apiUrl + '/.netlify/functions/sign_in';
+    const response = await fetch(signInUrl, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -58,28 +63,30 @@ export const signIn = async (
     } else {
       const data = await response.json();
       console.log('Error: ' + JSON.stringify(data));
-      setLoginError(t('lib.auth.signIn.cantLogin'));
+      setSignInError(t('lib.auth.signIn.cantLogin'));
     }
   } catch (error) {
     console.log('Login error: ' + error);
-    setLoginError(t('lib.auth.signIn.cantLogin'));
+    setSignInError(t('lib.auth.signIn.cantLogin'));
   }
 };
 
 export const signUp = async (
-  username,
-  email,
-  password,
-  setLoggedUser,
-  setLoginError,
-  t
+  username: string,
+  email: string,
+  password: string,
+  setLoggedUser: Function = null,
+  setLoginError: Function = null,
+  apiUrl: string = null,
+  t: Function = defaultTranslator
 ) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const saltedPassword = await bcrypt.hash(password, salt);
-    const response = await fetch('/.netlify/functions/sign_up', {
+    const signUpUrl = apiUrl + '/.netlify/functions/sign_up';
+    const response = await fetch(signUpUrl, {
       method: 'POST',
-      mode: 'cors',
+      mode: 'no-cors',
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',

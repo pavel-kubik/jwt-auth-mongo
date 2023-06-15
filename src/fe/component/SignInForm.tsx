@@ -8,6 +8,7 @@ const SignInForm = ({
   setLoggedUser,
   preSignIn = null,
   postSignIn = null,
+  apiUrl = null,
   t = (key: string, replaceValues = {}) => key,
 }) => {
   const [signInError, setSignInError] = useState(null);
@@ -21,6 +22,7 @@ const SignInForm = ({
       values.password,
       setLoggedUser,
       setSignInError,
+      apiUrl,
       t
     );
     values.password = '';

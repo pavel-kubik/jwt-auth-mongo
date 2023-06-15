@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { signIn } from '../../util/auth';
 import defaultTranslator from '../../util/defaultTranslator';
+import Button from './Button';
+import ButtonBar from './ButtonBar';
 
 export type Props = {
   setLoggedUser: Function;
   preSignIn?: Function;
   postSignIn?: Function;
+  apiUrl: string;
   t?: Function;
 };
 
@@ -17,24 +20,36 @@ const SignInForm: React.FC<Props> = ({
   setLoggedUser,
   preSignIn = null,
   postSignIn = null,
+  apiUrl = null,
   t = defaultTranslator,
 }) => {
   const [signInError, setSignInError] = useState(null);
 
   const signInHandler = async (values) => {
-    if (preSignIn) {
-      preSignIn();
-    }
-    const userData = await signIn(
-      values.email,
-      values.password,
-      setLoggedUser,
-      setSignInError,
-      t
-    );
-    values.password = '';
-    if (postSignIn) {
-      postSignIn(userData);
+    try {
+      if (preSignIn) {
+        preSignIn();
+      }
+      const userData = await signIn(
+        values.email,
+        values.password,
+        setLoggedUser,
+        setSignInError,
+        apiUrl,
+        t
+      );
+      if (userData) {
+        values.password = '';
+        if (postSignIn) {
+          postSignIn(userData);
+        }
+      } else {
+        setSignInError(t('lib.auth.signIn.cantSignUp'));
+        return false;
+      }
+    } catch (e) {
+      setSignInError(t('lib.auth.signIn.cantSignUp'));
+      return false;
     }
   };
 
@@ -78,7 +93,7 @@ const SignInForm: React.FC<Props> = ({
                 value={values.email}
                 placeholder="Enter email"
                 autoComplete="off"
-                onChange={() => handleChange('email')}
+                onChangeText={handleChange('email')}
               />
             </View>
             {errors.email && touched.email ? (
@@ -95,7 +110,7 @@ const SignInForm: React.FC<Props> = ({
                 value={values.password}
                 placeholder="Enter password"
                 autoComplete="off"
-                onChange={() => handleChange('password')}
+                onChangeText={handleChange('password')}
               />
             </View>
             {errors.password && touched.password ? (
@@ -108,10 +123,12 @@ const SignInForm: React.FC<Props> = ({
             {signInError && (
               <Text style={styles.errorMessage}>{signInError}</Text>
             )}
-            <Button
-              title={t('components.authForm.login')}
-              onPress={() => handleSubmit()}
-            />
+            <ButtonBar>
+              <Button
+                title={t('components.authForm.login')}
+                onPress={handleSubmit}
+              />
+            </ButtonBar>
           </View>
         </View>
       )}
