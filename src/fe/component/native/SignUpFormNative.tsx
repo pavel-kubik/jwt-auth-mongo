@@ -7,6 +7,7 @@ import { signUp } from '../../util/auth';
 import defaultTranslator from '../../util/defaultTranslator';
 import Button from './Button';
 import ButtonBar from './ButtonBar';
+import { isWeb } from '../../util/util';
 
 export type Props = {
   setLoggedUser: Function;
@@ -15,6 +16,8 @@ export type Props = {
   postSignUp?: Function;
   apiUrl?: string;
   t?: Function;
+  styleSheetWeb?: StyleSheet;
+  styleSheetMobile?: StyleSheet;
 };
 
 const SignUpForm: React.FC<Props> = ({
@@ -24,6 +27,8 @@ const SignUpForm: React.FC<Props> = ({
   postSignUp = null,
   apiUrl = null,
   t = defaultTranslator,
+  styleSheetWeb = null,
+  styleSheetMobile = null,
 }) => {
   const [signUpError, setSignUpError] = useState(null);
 
@@ -69,6 +74,14 @@ const SignUpForm: React.FC<Props> = ({
     setSignUpError(null);
   };
 
+  const styles: any = isWeb()
+    ? styleSheetWeb
+      ? styleSheetWeb
+      : styleTemplates
+    : styleSheetMobile
+    ? styleSheetMobile
+    : styleTemplates;
+
   return (
     <Formik
       initialValues={{
@@ -90,14 +103,15 @@ const SignUpForm: React.FC<Props> = ({
         errors,
       }) => (
         <View style={styles.container}>
-          <View>
+          <View style={styles.fieldView}>
             <View style={styles.fieldWrapper}>
-              <Text>{t('components.authForm.username')}</Text>
+              {isWeb() && <Text>{t('components.authForm.username')}</Text>}
               <TextInput
                 style={styles.input}
                 onBlur={handleBlur('username')}
                 value={values.username}
                 placeholder="Enter username"
+                placeholderTextColor={isWeb() ? 'black' : 'white'}
                 autoComplete="off"
                 onChangeText={handleChange('username')}
               />
@@ -108,14 +122,15 @@ const SignUpForm: React.FC<Props> = ({
               </Text>
             ) : null}
           </View>
-          <View>
+          <View style={styles.fieldView}>
             <View style={styles.fieldWrapper}>
-              <Text>{t('components.authForm.email')}</Text>
+              {isWeb() && <Text>{t('components.authForm.email')}</Text>}
               <TextInput
                 style={styles.input}
                 onBlur={handleBlur('email')}
                 value={values.email}
                 placeholder="Enter email"
+                placeholderTextColor={isWeb() ? 'black' : 'white'}
                 autoComplete="off"
                 onChangeText={handleChange('email')}
               />
@@ -124,15 +139,16 @@ const SignUpForm: React.FC<Props> = ({
               <Text style={styles.errorMessage}>{errors.email as string}</Text>
             ) : null}
           </View>
-          <View>
+          <View style={styles.fieldView}>
             <View style={styles.fieldWrapper}>
-              <Text>{t('components.authForm.password')}</Text>
+              {isWeb() && <Text>{t('components.authForm.password')}</Text>}
               <TextInput
                 style={styles.input}
                 secureTextEntry={true}
                 onBlur={handleBlur('password')}
                 value={values.password}
                 placeholder="Enter password"
+                placeholderTextColor={isWeb() ? 'black' : 'white'}
                 autoComplete="off"
                 onChangeText={handleChange('password')}
               />
@@ -160,24 +176,36 @@ const SignUpForm: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styleTemplates = StyleSheet.create({
   container: {
-    maxWidth: 600,
-    height: '100%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  fieldView: {
+    width: '100%',
+    alignItems: 'center',
   },
   fieldWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 20,
+    backgroundColor: '#3BF',
+    borderRadius: 30,
+    width: '70%',
+    height: 45,
+    marginTop: 20,
+
+    alignItems: 'center',
+  },
+  input: {
+    height: 50,
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
+    width: '100%',
+    color: 'white',
   },
   buttonArea: {
     flexDirection: 'column',
     paddingTop: 20,
-  },
-  input: {
-    borderWidth: 1,
-    marginLeft: 20,
-    paddingLeft: 5,
   },
   errorMessage: {
     color: 'red',

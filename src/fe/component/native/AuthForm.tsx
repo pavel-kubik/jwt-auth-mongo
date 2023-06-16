@@ -18,6 +18,12 @@ export type Props = {
   postSignUp?: Function;
   apiUrl?: string;
   t: Function;
+  styleTemplate?: {
+    signInWeb?: StyleSheet;
+    signInMobile?: StyleSheet;
+    signUpWeb?: StyleSheet;
+    signUpMobile?: StyleSheet;
+  };
 };
 
 const AuthForm: React.FC<Props> = ({
@@ -31,6 +37,7 @@ const AuthForm: React.FC<Props> = ({
   postSignUp = null,
   apiUrl = null,
   t = defaultTranslator,
+  styleTemplate = null,
 }) => {
   const [index, setIndex] = useState(0);
 
@@ -65,6 +72,8 @@ const AuthForm: React.FC<Props> = ({
                 postSignIn={postSignIn}
                 apiUrl={apiUrl}
                 t={t}
+                styleSheetWeb={styleTemplate.signInWeb}
+                styleSheetMobile={styleTemplate.signInMobile}
               />
             </TabView.Item>
             <TabView.Item style={styles.tab}>
@@ -75,6 +84,8 @@ const AuthForm: React.FC<Props> = ({
                 postSignUp={postSignUp}
                 apiUrl={apiUrl}
                 t={t}
+                styleSheetWeb={styleTemplate.signUpWeb}
+                styleSheetMobile={styleTemplate.signUpMobile}
               />
             </TabView.Item>
           </TabView>

@@ -7,6 +7,7 @@ import { signIn } from '../../util/auth';
 import defaultTranslator from '../../util/defaultTranslator';
 import Button from './Button';
 import ButtonBar from './ButtonBar';
+import { isWeb } from '../../util/util';
 
 export type Props = {
   setLoggedUser: Function;
@@ -15,6 +16,8 @@ export type Props = {
   postSignIn?: Function;
   apiUrl: string;
   t?: Function;
+  styleSheetWeb?: StyleSheet;
+  styleSheetMobile?: StyleSheet;
 };
 
 const SignInForm: React.FC<Props> = ({
@@ -24,6 +27,8 @@ const SignInForm: React.FC<Props> = ({
   postSignIn = null,
   apiUrl = null,
   t = defaultTranslator,
+  styleSheetWeb = null,
+  styleSheetMobile = null,
 }) => {
   const [signInError, setSignInError] = useState(null);
 
@@ -67,6 +72,14 @@ const SignInForm: React.FC<Props> = ({
     setSignInError(null);
   };
 
+  const styles: any = isWeb()
+    ? styleSheetWeb
+      ? styleSheetWeb
+      : styleTemplates
+    : styleSheetMobile
+    ? styleSheetMobile
+    : styleTemplates;
+
   return (
     <Formik
       initialValues={{
@@ -87,14 +100,15 @@ const SignInForm: React.FC<Props> = ({
         errors,
       }) => (
         <View style={styles.container}>
-          <View>
+          <View style={styles.fieldView}>
             <View style={styles.fieldWrapper}>
-              <Text>{t('components.authForm.email')}</Text>
+              {isWeb() && <Text>{t('components.authForm.email')}</Text>}
               <TextInput
                 style={styles.input}
                 onBlur={handleBlur('email')}
                 value={values.email}
                 placeholder="Enter email"
+                placeholderTextColor={isWeb() ? 'black' : 'white'}
                 autoComplete="off"
                 onChangeText={handleChange('email')}
               />
@@ -103,15 +117,16 @@ const SignInForm: React.FC<Props> = ({
               <Text style={styles.errorMessage}>{errors.email as string}</Text>
             ) : null}
           </View>
-          <View>
+          <View style={styles.fieldView}>
             <View style={styles.fieldWrapper}>
-              <Text>{t('components.authForm.password')}</Text>
+              {isWeb() && <Text>{t('components.authForm.password')}</Text>}
               <TextInput
                 style={styles.input}
                 secureTextEntry={true}
                 onBlur={handleBlur('password')}
                 value={values.password}
                 placeholder="Enter password"
+                placeholderTextColor={isWeb() ? 'black' : 'white'}
                 autoComplete="off"
                 onChangeText={handleChange('password')}
               />
@@ -139,29 +154,68 @@ const SignInForm: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    maxWidth: 600,
-    height: '100%',
-  },
-  fieldWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 20,
-  },
-  buttonArea: {
-    flexDirection: 'column',
-    paddingTop: 20,
-  },
-  input: {
-    borderWidth: 1,
-    marginLeft: 20,
-    paddingLeft: 5,
-  },
-  errorMessage: {
-    color: 'red',
-    textAlign: 'center',
-  },
-});
+const styleTemplates = isWeb()
+  ? StyleSheet.create({
+      container: {
+        maxWidth: 600,
+        height: '100%',
+      },
+      fieldView: {},
+      fieldWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: 20,
+      },
+      input: {
+        borderWidth: 1,
+        marginLeft: 20,
+        paddingLeft: 5,
+      },
+      buttonArea: {
+        flexDirection: 'column',
+        paddingTop: 20,
+      },
+      errorMessage: {
+        color: 'red',
+        textAlign: 'center',
+      },
+    })
+  : // mobile styles
+    StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+      },
+      fieldView: {
+        width: '100%',
+        alignItems: 'center',
+      },
+      fieldWrapper: {
+        backgroundColor: '#3BF',
+        borderRadius: 30,
+        width: '70%',
+        height: 45,
+        marginTop: 20,
+
+        alignItems: 'center',
+      },
+      input: {
+        height: 50,
+        flex: 1,
+        padding: 10,
+        textAlign: 'center',
+        width: '100%',
+        color: 'white',
+      },
+      buttonArea: {
+        flexDirection: 'column',
+        paddingTop: 20,
+      },
+      errorMessage: {
+        color: 'red',
+        textAlign: 'center',
+      },
+    });
 
 export default SignInForm;
