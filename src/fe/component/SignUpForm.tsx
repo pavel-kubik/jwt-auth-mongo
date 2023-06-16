@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { signUp } from '../util/auth';
+import { signUp, storeUserDataInLocalStorage } from '../util/auth';
 
 const SignUpForm = ({
   setLoggedUser,
   preSignUp = null,
   postSignUp = null,
   apiUrl = null,
+  storeUserData = storeUserDataInLocalStorage,
   t = (key: string, replaceValues = {}) => key,
 }) => {
   const [signUpError, setSignUpError] = useState(null);
@@ -23,6 +24,7 @@ const SignUpForm = ({
       values.password,
       setLoggedUser,
       setSignUpError,
+      storeUserData,
       apiUrl,
       t
     );

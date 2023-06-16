@@ -10,6 +10,7 @@ import ButtonBar from './ButtonBar';
 
 export type Props = {
   setLoggedUser: Function;
+  storeUserData: Function;
   preSignUp?: Function;
   postSignUp?: Function;
   apiUrl?: string;
@@ -18,6 +19,7 @@ export type Props = {
 
 const SignUpForm: React.FC<Props> = ({
   setLoggedUser,
+  storeUserData,
   preSignUp = null,
   postSignUp = null,
   apiUrl = null,
@@ -36,6 +38,7 @@ const SignUpForm: React.FC<Props> = ({
         values.password,
         setLoggedUser,
         setSignUpError,
+        storeUserData,
         apiUrl,
         t
       );
@@ -100,7 +103,9 @@ const SignUpForm: React.FC<Props> = ({
               />
             </View>
             {errors.username && touched.username ? (
-              <Text style={styles.errorMessage}>{errors.username as string}</Text>
+              <Text style={styles.errorMessage}>
+                {errors.username as string}
+              </Text>
             ) : null}
           </View>
           <View>
@@ -133,7 +138,9 @@ const SignUpForm: React.FC<Props> = ({
               />
             </View>
             {errors.password && touched.password ? (
-              <Text style={styles.errorMessage}>{errors.password as string}</Text>
+              <Text style={styles.errorMessage}>
+                {errors.password as string}
+              </Text>
             ) : null}
           </View>
           <View style={styles.buttonArea}>

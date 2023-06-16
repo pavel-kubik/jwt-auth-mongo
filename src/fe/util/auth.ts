@@ -16,8 +16,9 @@ export const getUserDataInLocalStorage = () => {
 export const signIn = async (
   email: string,
   password: string,
-  setLoggedUser: Function = null,
-  setSignInError: Function = null,
+  setLoggedUser: Function,
+  setSignInError: Function,
+  storeUserData: Function,
   apiUrl: string = null,
   t: Function = defaultTranslator
 ) => {
@@ -58,7 +59,11 @@ export const signIn = async (
     if (response.status === 200) {
       const userData = await response.json();
       setLoggedUser(userData);
-      storeUserDataInLocalStorage(userData);
+      if (storeUserData.constructor.name === 'AsyncFunction') {
+        await storeUserData(userData);
+      } else {
+        storeUserData(userData);
+      }
       return userData;
     } else {
       const data = await response.json();
@@ -75,8 +80,9 @@ export const signUp = async (
   username: string,
   email: string,
   password: string,
-  setLoggedUser: Function = null,
-  setLoginError: Function = null,
+  setLoggedUser: Function,
+  setLoginError: Function,
+  storeUserData: Function,
   apiUrl: string = null,
   t: Function = defaultTranslator
 ) => {
@@ -102,7 +108,11 @@ export const signUp = async (
       //const token = response.headers.get('x-access-token');
       const userData = await response.json();
       setLoggedUser(userData);
-      storeUserDataInLocalStorage(userData);
+      if (storeUserData.constructor.name === 'AsyncFunction') {
+        await storeUserData(userData);
+      } else {
+        storeUserData(userData);
+      }
       return userData;
     } else {
       const data = await response.json();

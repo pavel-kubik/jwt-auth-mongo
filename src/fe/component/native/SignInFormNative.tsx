@@ -10,6 +10,7 @@ import ButtonBar from './ButtonBar';
 
 export type Props = {
   setLoggedUser: Function;
+  storeUserData: Function;
   preSignIn?: Function;
   postSignIn?: Function;
   apiUrl: string;
@@ -18,6 +19,7 @@ export type Props = {
 
 const SignInForm: React.FC<Props> = ({
   setLoggedUser,
+  storeUserData,
   preSignIn = null,
   postSignIn = null,
   apiUrl = null,
@@ -35,6 +37,7 @@ const SignInForm: React.FC<Props> = ({
         values.password,
         setLoggedUser,
         setSignInError,
+        storeUserData,
         apiUrl,
         t
       );
@@ -44,11 +47,11 @@ const SignInForm: React.FC<Props> = ({
           postSignIn(userData);
         }
       } else {
-        setSignInError(t('lib.auth.signIn.cantSignUp'));
+        setSignInError(t('lib.auth.signIn.cantLogin'));
         return false;
       }
     } catch (e) {
-      setSignInError(t('lib.auth.signIn.cantSignUp'));
+      setSignInError(t('lib.auth.signIn.cantLogin'));
       return false;
     }
   };

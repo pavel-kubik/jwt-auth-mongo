@@ -6,11 +6,25 @@ import SignInForm from './SignInFormNative';
 import SignUpForm from './SignUpFormNative';
 import { StyleSheet, View } from 'react-native';
 import UserForm from './UserForm';
-import { clearUserDataInLocalStorage } from '../../util/auth';
 
-const AuthForm = ({
+export type Props = {
+  loggedUser: { username: string };
+  setLoggedUser: Function;
+  storeUserData: Function;
+  clearUserData: Function;
+  preSignIn?: Function;
+  preSignUp?: Function;
+  postSignIn?: Function;
+  postSignUp?: Function;
+  apiUrl?: string;
+  t: Function;
+};
+
+const AuthForm: React.FC<Props> = ({
   loggedUser,
   setLoggedUser,
+  storeUserData,
+  clearUserData,
   preSignIn = null,
   preSignUp = null,
   postSignIn = null,
@@ -22,7 +36,7 @@ const AuthForm = ({
 
   const signOut = async () => {
     setLoggedUser(null);
-    clearUserDataInLocalStorage();
+    clearUserData();
   };
 
   return (
@@ -46,6 +60,7 @@ const AuthForm = ({
             <TabView.Item style={styles.tab}>
               <SignInForm
                 setLoggedUser={setLoggedUser}
+                storeUserData={storeUserData}
                 preSignIn={preSignIn}
                 postSignIn={postSignIn}
                 apiUrl={apiUrl}
@@ -55,6 +70,7 @@ const AuthForm = ({
             <TabView.Item style={styles.tab}>
               <SignUpForm
                 setLoggedUser={setLoggedUser}
+                storeUserData={storeUserData}
                 preSignUp={preSignUp}
                 postSignUp={postSignUp}
                 apiUrl={apiUrl}
