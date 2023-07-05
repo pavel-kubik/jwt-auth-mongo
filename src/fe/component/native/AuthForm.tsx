@@ -19,6 +19,7 @@ export type Props = {
   apiUrl?: string;
   t: Function;
   styleTemplate?: {
+    main: StyleSheet;
     signInWeb?: StyleSheet;
     signInMobile?: StyleSheet;
     signUpWeb?: StyleSheet;
@@ -45,6 +46,8 @@ const AuthForm: React.FC<Props> = ({
     setLoggedUser(null);
     clearUserData();
   };
+
+  const styles: any = styleTemplate.main ? styleTemplate.main : defaultStyles;
 
   return (
     <View style={styles.container}>
@@ -98,7 +101,7 @@ const AuthForm: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const defaultStyles = StyleSheet.create({
   container: {
     height: '100%', // content is collapsed if not present
   },

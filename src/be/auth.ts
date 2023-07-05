@@ -136,9 +136,9 @@ export const signInSalt = async (event, context) => {
       };
     }
     return {
-      statusCode: 401,
+      statusCode: 404,
       body: JSON.stringify({
-        message: 'Username or password is incorrect',
+        message: 'Email not found',
       }),
     };
   } catch (error) {
@@ -187,7 +187,7 @@ export const signUp = async (event, context) => {
     }
     const userDataByUsername = await collection.findOne({ username: username });
     if (userDataByUsername) {
-      console.log('Username [' + email + '] is already used.');
+      console.log('Username [' + username + '] is already used.');
       return {
         statusCode: 409,
         body: JSON.stringify({
@@ -225,6 +225,123 @@ export const signUp = async (event, context) => {
         token: token,
       }),
     };
+  } catch (error) {
+    console.log(error);
+    return { statusCode: 500, body: error.toString() };
+  }
+};
+
+export const changePassword = async (event, context) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 404 };
+  }
+
+  if (!process.env.TOKEN_KEY) {
+    console.log(
+      'MISCONFIGURATION - Missing TOKEN_KEY. Please add it to environment variables.'
+    );
+    return { statusCode: 500, body: 'Missing TOKEN KEY' };
+  }
+
+  const { email, resetCode, salt, newPassword } = JSON.parse(event.body);
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const database = await connectToDatabase(process.env.MONGODB_URI);
+    const collection = database.collection('user');
+
+    const userData = await collection.findOne({ email: email });
+
+    if (userData && userData.email === email) {
+      if (userData.resetCode !== resetCode) {
+        return { statusCode: 401, body: "Can't store reset code." };
+      }
+      const encryptedPassword = await bcrypt.hash(newPassword, 10);
+      const updateResult = await collection.updateOne(
+        { _id: userData._id },
+        {
+          $set: { salt: salt, password: encryptedPassword },
+          $unset: { resetCode: 1 },
+        }
+      );
+      if (!updateResult || updateResult.matchedCount !== 1) {
+        return { statusCode: 500, body: "Can't store reset code." };
+      }
+      return { statusCode: 200 };
+    }
+    return { statusCode: 500, body: "Can't send email." };
+  } catch (error) {
+    console.log(error);
+    return { statusCode: 500, body: error.toString() };
+  }
+};
+
+export const resetPassword = async (event, context, mail) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 404 };
+  }
+
+  if (!process.env.TOKEN_KEY) {
+    console.log(
+      'MISCONFIGURATION - Missing TOKEN_KEY. Please add it to environment variables.'
+    );
+    return { statusCode: 500, body: 'Missing TOKEN KEY' };
+  }
+
+  const { email } = JSON.parse(event.body);
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  try {
+    const database = await connectToDatabase(process.env.MONGODB_URI);
+    const collection = database.collection('user');
+
+    const userData = await collection.findOne({ email: email });
+
+    if (userData && userData.email === email) {
+      const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const updateResult = await collection.updateOne(
+        { _id: userData._id },
+        { $set: { resetCode: resetCode } }
+      );
+      if (!updateResult || updateResult.matchedCount !== 1) {
+        return { statusCode: 500, body: "Can't store reset code." };
+      }
+
+      if (process.env.NETLIFY_EMAILS_PROVIDER_API_KEY) {
+        mail.setApiKey(process.env.NETLIFY_EMAILS_PROVIDER_API_KEY);
+        const message = {
+          to: email,
+          from: 'info@mestle.cz', // Change to your verified sender
+          subject: 'Reset password',
+          text: `Hi ${userData.username}\n
+We received your request to reset password.\n
+Please use reset code ${resetCode} for change password.\n
+https://boardito.online/change-password\n`,
+          html: `<html>
+                  <body>
+                    <h1>Hi ${userData.username}!</h1>
+                    <p>We received your request to reset password.</p>
+                    <p>Please use reset code ${resetCode} for change password.</p>
+                    <p><a href="https://boardito.online/change-password">Change password url</a></p>
+                  </body>
+                </html>`,
+        };
+        mail
+          .send(message)
+          .then(() => {
+            console.log('Email sent');
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        console.log(
+          'Key NETLIFY_EMAILS_PROVIDER_API_KEY not provided. Simulate send email.'
+        );
+      }
+      return { statusCode: 200 };
+    }
+    return { statusCode: 500, body: "Can't send email." };
   } catch (error) {
     console.log(error);
     return { statusCode: 500, body: error.toString() };

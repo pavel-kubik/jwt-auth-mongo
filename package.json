@@ -1,6 +1,6 @@
 {
   "name": "jwt-auth-mongodb",
-  "version": "1.0.10-beta.2",
+  "version": "1.0.10-beta.5",
   "description": "JWT authentication module using mongo db to store users",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,6 +43,7 @@
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-native": "^0.71.8",
+    "react-navigation": "^4.4.4",
     "yup": "^1.2.0"
   }
 }

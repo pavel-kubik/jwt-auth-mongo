@@ -92,7 +92,7 @@ export const signUp = async (
     const signUpUrl = apiUrl + '/.netlify/functions/sign_up';
     const response = await fetch(signUpUrl, {
       method: 'POST',
-      mode: 'no-cors',
+      mode: 'cors',
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
@@ -126,5 +126,84 @@ export const signUp = async (
   } catch (error) {
     console.log('Signup error: ' + error);
     setLoginError(t('lib.auth.signUp.cantSignUp'));
+  }
+};
+
+export const resetPassword = async (
+  email: string,
+  setResetError: Function,
+  apiUrl: string = null,
+  t: Function = defaultTranslator
+) => {
+  try {
+    const resetUrl = apiUrl + '/.netlify/functions/reset';
+    const response = await fetch(resetUrl, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    });
+    if (response.status === 200) {
+      return true;
+    } else {
+      const data = await response.json();
+      console.log('Reset error: ' + JSON.stringify(data));
+      if (data.errorCode) {
+        setResetError(t(data.errorCode));
+      } else {
+        setResetError(t('global.emailNotFound'));
+      }
+    }
+  } catch (error) {
+    console.log('Reset error: ' + error);
+    setResetError(t('lib.auth.reset.cantReset'));
+  }
+};
+
+export const changePassword = async (
+  email: string,
+  resetCode: string,
+  newPassword: string,
+  setChangePasswordError: Function,
+  apiUrl: string = null,
+  t: Function = defaultTranslator
+) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const saltedPassword = await bcrypt.hash(newPassword, salt);
+    const changePasswordUrl = apiUrl + '/.netlify/functions/change-password';
+    const response = await fetch(changePasswordUrl, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        resetCode: resetCode,
+        newPassword: saltedPassword,
+        salt: salt,
+      }),
+    });
+    if (response.status === 200) {
+      return true;
+    } else {
+      const data = await response.json();
+      console.log('Change password error: ' + JSON.stringify(data));
+      if (data.errorCode) {
+        setChangePasswordError(t(data.errorCode));
+      } else {
+        setChangePasswordError(t('global.emailNotFound'));
+      }
+    }
+  } catch (error) {
+    console.log('Change password error: ' + error);
+    setChangePasswordError(t('lib.auth.changePassword.cantChangePassword'));
   }
 };

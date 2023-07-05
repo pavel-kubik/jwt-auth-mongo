@@ -36,7 +36,7 @@ const UserForm: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    padding: 20,
     textAlign: 'center',
   },
 });

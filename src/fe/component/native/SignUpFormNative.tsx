@@ -176,41 +176,68 @@ const SignUpForm: React.FC<Props> = ({
   );
 };
 
-const styleTemplates = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  fieldView: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  fieldWrapper: {
-    backgroundColor: '#3BF',
-    borderRadius: 30,
-    width: '70%',
-    height: 45,
-    marginTop: 20,
+const styleTemplates = isWeb()
+  ? StyleSheet.create({
+      container: {
+        maxWidth: 600,
+        height: '100%',
+      },
+      fieldView: {},
+      fieldWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: 20,
+      },
+      input: {
+        borderWidth: 1,
+        marginLeft: 20,
+        paddingLeft: 5,
+      },
+      buttonArea: {
+        flexDirection: 'column',
+        paddingTop: 20,
+      },
+      errorMessage: {
+        color: 'red',
+        textAlign: 'center',
+      },
+    })
+  : // mobile styles
+    StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+      },
+      fieldView: {
+        width: '100%',
+        alignItems: 'center',
+      },
+      fieldWrapper: {
+        backgroundColor: '#3BF',
+        borderRadius: 30,
+        width: '70%',
+        height: 45,
+        marginTop: 20,
 
-    alignItems: 'center',
-  },
-  input: {
-    height: 50,
-    flex: 1,
-    padding: 10,
-    textAlign: 'center',
-    width: '100%',
-    color: 'white',
-  },
-  buttonArea: {
-    flexDirection: 'column',
-    paddingTop: 20,
-  },
-  errorMessage: {
-    color: 'red',
-    textAlign: 'center',
-  },
-});
+        alignItems: 'center',
+      },
+      input: {
+        height: 50,
+        flex: 1,
+        padding: 10,
+        textAlign: 'center',
+        width: '100%',
+        color: 'white',
+      },
+      buttonArea: {
+        flexDirection: 'column',
+        paddingTop: 20,
+      },
+      errorMessage: {
+        color: 'red',
+        textAlign: 'center',
+      },
+    });
 
 export default SignUpForm;

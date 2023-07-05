@@ -11,6 +11,7 @@ const SignInForm = ({
   apiUrl = null,
   storeUserData = storeUserDataInLocalStorage,
   t = (key: string, replaceValues = {}) => key,
+  resetPasswordUrl = '/reset-password',
 }) => {
   const [signInError, setSignInError] = useState(null);
 
@@ -103,6 +104,9 @@ const SignInForm = ({
               >
                 {t('components.user.login.submit')}
               </div>
+              <a href={resetPasswordUrl}>
+                t('components.user.login.resetPassword')
+              </a>
             </fieldset>
           )}
         </Formik>

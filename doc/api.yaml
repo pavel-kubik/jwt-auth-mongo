@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: Jwt Auth MongoDB - OpenAPI 3.0
+  description: |-
+    Authentication library using jwt stored at BE in MongoDB.
+
+    Some useful links:
+    - [Jwt Auth MongoDB github](https://github.com/pavel-kubik/jwt-auth-mongodb)
+    - [Jwt Auth MongoDB npmjs](https://www.npmjs.com/package/jwt-auth-mongodb)
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.10-beta4
+externalDocs:
+  description: Find out more about Jwt Auth MongoDb
+  url: https://github.com/pavel-kubik/jwt-auth-mongodb#readme
+tags:
+  - name: authentication
+    description: Authentication API
+paths:
+  /.netlify/functions/signUp:
+    post:
+      tags:
+        - authentication
+      summary: Sign up user
+      description: Register user using email and password
+      operationId: signUp
+      requestBody:
+        description: Register user request parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '409':
+          description: Username/email already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /.netlify/functions/signInSalt:
+    post:
+      tags:
+        - authentication
+      summary: Get salt used for hash password
+      description: Get salt used for hash password
+      operationId: signInSalt
+      requestBody:
+        description: User email
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSaltRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSaltResponse'
+        '404':
+          description: Email not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /.netlify/functions/signIn:
+    post:
+      tags:
+        - authentication
+      summary: Sign in user
+      description: Login user using email and password
+      operationId: signIn
+      requestBody:
+        description: Login user request parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Username or password is incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    UserRegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: john
+        email:
+          type: string
+          example: john@email.com
+        salt:
+          type: string
+          example: '123456779'
+        password:
+          type: string
+          example: '12345'
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+          example: john
+        token:
+          type: string
+          example: jwtAuthToken.123456.abcdefgh
+    UserSaltRequest:
+      properties:
+        email:
+          type: string
+          example: john@email.com
+    UserSaltResponse:
+      properties:
+        salt:
+          type: string
+          example: '123456779'
+    UserLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+    UserLoginResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+          example: john
+        token:
+          type: string
+          example: jwtAuthToken.123456.abcdefgh
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error description.

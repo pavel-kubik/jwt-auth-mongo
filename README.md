@@ -115,7 +115,7 @@ export const handler: Handler = async (event, context) => {
 
 ### Secured call
 
-Every secured endpoint should be wrapped with `validateJWT`.
+Every secured endpoint should be wrapped with `validateJWT` at Back-end.
 
 ```
 import { Handler } from '@netlify/functions';
@@ -136,6 +136,12 @@ export const handler: Handler = async (event) => {
   });
   return response;
 };
+```
+
+Frontend should add following header:
+
+```
+'x-access-token': jwt
 ```
 
 ## MongoDB

@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { signIn } from '../../util/auth';
 import defaultTranslator from '../../util/defaultTranslator';
@@ -31,6 +38,8 @@ const SignInForm: React.FC<Props> = ({
   styleSheetMobile = null,
 }) => {
   const [signInError, setSignInError] = useState(null);
+
+  const navigation = useNavigation();
 
   const signInHandler = async (values) => {
     try {
@@ -148,6 +157,16 @@ const SignInForm: React.FC<Props> = ({
               />
             </ButtonBar>
           </View>
+          <TouchableOpacity
+            style={{ flex: 1, justifyContent: 'center' }}
+            onPress={() => {
+              navigation.navigate('ResetPassword');
+            }}
+          >
+            <Text style={{ textAlign: 'center', color: 'blue' }}>
+              {t('components.user.login.resetPassword')}
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </Formik>
