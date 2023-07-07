@@ -158,7 +158,10 @@ const SignInForm: React.FC<Props> = ({
             </ButtonBar>
           </View>
           <TouchableOpacity
-            style={{ flex: 1, justifyContent: 'center' }}
+            style={{
+              flex: 1,
+              justifyContent: 'flex-start',
+            }}
             onPress={() => {
               navigation.navigate('ResetPassword');
             }}
