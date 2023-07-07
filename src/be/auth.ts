@@ -276,7 +276,7 @@ export const changePassword = async (event, context) => {
   }
 };
 
-export const resetPassword = async (event, context, mail) => {
+export const resetPassword = async (event, context, sendMailHandler) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 404 };
   }
@@ -308,32 +308,7 @@ export const resetPassword = async (event, context, mail) => {
       }
 
       if (process.env.NETLIFY_EMAILS_PROVIDER_API_KEY) {
-        mail.setApiKey(process.env.NETLIFY_EMAILS_PROVIDER_API_KEY);
-        const message = {
-          to: email,
-          from: 'info@mestle.cz', // Change to your verified sender
-          subject: 'Reset password',
-          text: `Hi ${userData.username}\n
-We received your request to reset password.\n
-Please use reset code ${resetCode} for change password.\n
-https://boardito.online/change-password\n`,
-          html: `<html>
-                  <body>
-                    <h1>Hi ${userData.username}!</h1>
-                    <p>We received your request to reset password.</p>
-                    <p>Please use reset code ${resetCode} for change password.</p>
-                    <p><a href="https://boardito.online/change-password">Change password url</a></p>
-                  </body>
-                </html>`,
-        };
-        mail
-          .send(message)
-          .then(() => {
-            console.log('Email sent');
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        await sendMailHandler(email, userData.username, resetCode);
       } else {
         console.log(
           'Key NETLIFY_EMAILS_PROVIDER_API_KEY not provided. Simulate send email.'
